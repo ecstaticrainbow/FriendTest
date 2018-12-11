@@ -6,6 +6,7 @@ $(document).ready(function(){
   var metaThemeColor = document.querySelector("meta[name=theme-color]");
   metaThemeColor.setAttribute("content", random_color);
   $('body').css('background-color', random_color);
+  $()
 
   $("#hostButton").click(function(event) {
     var roomcode = makeid();

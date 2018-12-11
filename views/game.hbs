@@ -1,6 +1,6 @@
 
 <h1 id="ingame-logo">friendtest.io</h1>
-
+<audio id="backgroundMusic" autoplay loop><source src="Playdate.wav" type="audio/wav" ></audio>
 <div id="roomCode">
 	<p class="roomCodeText">Your room key:</p>
 	<span class="roomCode"></span>
@@ -10,12 +10,12 @@
 	<p id="description">
 		how 2 play
 	</p>
-	<button id="startButton">Start Game</button>
+	<input type="button" id="startButton"/>
 	<div id="host-options">
-		<h2>Host Options</h2>
-		Answer Timer (secs):<input type="number" id="answerTimer" name="answerTimer" value="30"><br/></input>
-		Number Of Rounds:<input type="number" id="numberOfRounds" name="numberOfRounds" value="3"/><br/></input>
-		Announcer:<input type="checkbox" id="announcer" name="announcer"><br/></input>
+		<!-- <h2>Host Options</h2> -->
+		<label>Answer Timer (secs):</label><button onclick="this.nextElementSibling.stepUp()" style="border-radius: 0px 8px 8px 0px">+</button><input type="number" id="answerTimer" name="answerTimer" value="30"><button onclick="this.previousElementSibling.stepDown()" style="border-radius: 8px 0px 0px 8px">-</button><br/></input>
+		<label>Questions Per Rounds:</label><button onclick="this.nextElementSibling.stepUp()" style="border-radius: 0px 8px 8px 0px">+</button><input type="number" id="numberOfQuestions" name="numberOfQuestions" value="5"/><button onclick="this.previousElementSibling.stepDown()" style="border-radius: 8px 0px 0px 8px">-</button><br/></input>
+		<label>Announcer:</label><input type="checkbox" id="announcer" name="announcer"><br/></input>
 	</div>
 
 </div>

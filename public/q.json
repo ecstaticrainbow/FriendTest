@@ -1,10 +1,10 @@
 { "questions": [
-  { "q":"are you gay", "a1":"maybe", "a2":"nope", "a3":"absolutely"},
-  { "q":"what is love", "a1":"gd", "a2":"bd", "a3":"sd" },
-  { "q":"wot ur name", "a1":"cherly", "a2":"tim", "a3":"goober" },
-  { "q":"are you the big gay", "a1":"how u know that", "a2":"no what is", "a3":"no u" },
-  { "q":"whom'st is dis?", "a1":"uh yeah", "a2":"its ya boy", "a3":"skinny penis" },
-  { "q":"enter your bank acc number", "a1":"ok", "a2":"48721387", "a3":"p3ni5" },
-  { "q":"answer the question", "a1":"what question", "a2":"indeed", "a3":"hmm, yes" },
-  { "q":"is ur friend signle ;)", "a1":"no hes mine", "a2":"yea go get em", "a3":"i already hit dat" }
+  { "q":"are you gay", "answers": { "1":"maybe", "2":"nope", "3":"absolutely" }},
+  { "q":"what is love", "answers": { "1":"gd", "2":"bd", "3":"sd" }},
+  { "q":"wot ur name", "answers": { "1":"cherly", "2":"tim", "3":"goober" }},
+  { "q":"are you the big gay", "answers": { "1":"how u know that", "2":"no what is", "3":"no u" }},
+  { "q":"whom'st is dis?", "answers": { "1":"uh yeah", "2":"its ya boy", "3":"skinny penis" }},
+  { "q":"enter your bank acc number", "answers": { "1":"ok", "2":"48721387", "3":"p3ni5" }},
+  { "q":"answer the question", "answers": {"1":"what question", "2":"indeed", "3":"hmm, yes" }},
+  { "q":"is ur friend signle ;)", "answers": { "1":"no hes mine", "2":"yea go get em", "3":"i already hit dat" }}
 ]}

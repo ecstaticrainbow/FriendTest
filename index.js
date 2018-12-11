@@ -55,6 +55,8 @@ class gameRoom {
     this.currentPlayer = 0;
     this.currentPlayerAnswer = 0;
     this.currentRoundAnswers = new Array();
+    this.currentPlayerVotes = new Array();
+
   }
   add(player) {
     this.players.push(player);
@@ -217,9 +219,9 @@ io.on('connection', function(socket){
      rooms[roomIndex].gameState = "round1questions";
      var questionSet = new Array();
      //set host questions
-     questionSet.push({player: rooms[roomIndex].host.username, questions: getQuestionSet(3)});
+     questionSet.push({player: rooms[roomIndex].host.username, questions: getQuestionSet(options.questionsPerRound)});
      for (var i = 0; i < rooms[roomIndex].players.length; i++) {
-       questionSet.push({player: rooms[roomIndex].players[i].username, questions: getQuestionSet(3)});
+       questionSet.push({player: rooms[roomIndex].players[i].username, questions: getQuestionSet(options.questionsPerRound)});
      }
      io.to(room).emit('roundstarted', questionSet, options);
 
@@ -240,6 +242,28 @@ io.on('connection', function(socket){
       io.to(room).emit('roundfinished', currentRoom.currentRoundAnswers);
       console.log("everyone has answered");
     }
+  });
+
+  socket.on("playerVoted", (playerVotes, room, username, playerCounter, currentRoundAnswers) => {
+    io.to(room).emit('playerAnswered', username);
+    var voteSet = {player: username, votes: playerVotes};
+    var currentRoom = rooms[roomIndex];
+
+    currentRoom.currentPlayerVotes.push(voteSet);
+
+    var totalplayers = currentRoom.players.length;
+    if (currentRoom.currentPlayerVotes.length === totalplayers) {
+      io.to(room).emit("votingFinished", currentRoom.currentPlayerVotes, playerCounter, currentRoundAnswers);
+      console.log("everyone has voted");
+    }
+  });
+
+  socket.on("resultsFinished", (room, playerCounter) => {
+    var currentRoom = rooms[roomIndex];
+    currentRoom.currentPlayerVotes = [];
+    if ((playerCounter+1) < (currentRoom.players.length + 1)){
+    io.to(room).emit("startVoting", currentRoom.currentRoundAnswers, (playerCounter+1));
+  }
   });
 
 
