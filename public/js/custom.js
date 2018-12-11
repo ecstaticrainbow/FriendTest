@@ -36,16 +36,16 @@ $(document).ready(function(){
   var globalOptions;
 
   socket.on("connectedUsers", (room) => {
-    console.log(room);
+    
     globalRoom = room;
     var currentColor = 1;
     $("#playerWrap").empty();
-    $("#playerWrap").append("<div id='" + room.host.username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.host.username + "?bg=ffffff&fg=" + imageColors[0] + "&size=220&fmt=svg'/><br/><span class='hostText'>Host</span><span class='playertext'>" + room.host.username + "</span></div>");
+    $("#playerWrap").append("<div id='" + room.host.username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.host.username + "?bg=ffffff&fg=" + imageColors[0] + "&size=220&fmt=svg'/><br/><span class='hostText'>Host</span><span class='playertext'>" + room.host.username + "</span><span class='playerscore'>0</span></div>");
     for (var i = 0; i < room.players.length; i++) {
       if(username === room.players[i].username) {
-        $("#playerWrap").append("<div id='" + room.players[i].username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.players[i].username + "?bg=ffffff&fg=" + imageColors[currentColor] + "&size=220&fmt=svg'/><br/><span class='currentPlayerText' style='background-color:" + imageColors[currentColor] + "'>You</span><span class='playertext'>" + room.players[i].username + "</span></div>");
+        $("#playerWrap").append("<div id='" + room.players[i].username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.players[i].username + "?bg=ffffff&fg=" + imageColors[currentColor] + "&size=220&fmt=svg'/><br/><span class='currentPlayerText' style='background-color:" + imageColors[currentColor] + "'>You</span><span class='playertext'>" + room.players[i].username + "</span><span class='playerscore'>0</span></div>");
       } else {
-        $("#playerWrap").append("<div id='" + room.players[i].username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.players[i].username + "?bg=ffffff&fg=" + imageColors[currentColor] + "&size=220&fmt=svg'/><br/><span class='playertext'>" + room.players[i].username + "</span></div>");
+        $("#playerWrap").append("<div id='" + room.players[i].username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.players[i].username + "?bg=ffffff&fg=" + imageColors[currentColor] + "&size=220&fmt=svg'/><br/><span class='playertext'>" + room.players[i].username + "</span><span class='playerscore'>0</span></div>");
       }
 
       if (currentColor == 8) {
@@ -192,8 +192,8 @@ $(document).ready(function(){
     }, 1000);
     $("#content-area").on('click', '.answer', function(event) {
       event.preventDefault();
-      console.log($(event.target).index());
-      playerAnswers.push({question: questionSet[playerIndex].questions[questionCounter - 1], answer: $(event.target).index()});
+      
+      playerAnswers.push({question: questionSet[playerIndex].questions[questionCounter - 1], answer: $(event.target).index() - 1});
       if (questionCounter < options.questionsPerRound) {
         showQuestion(questionSet[playerIndex].questions[questionCounter]);
         questionCounter++;
@@ -216,8 +216,7 @@ socket.on("roundfinished", (currentRoundAnswers) => {
   var voteCounter = 1; 
   var playerCounter = 0;
   var playerVotes = new Array();
-  console.log("roudn finished");
-  console.log(currentRoundAnswers);
+  
   $(".player").addClass('nowAnswering');
   $("#" + currentRoundAnswers[playerCounter].player).removeClass('nowAnswering');
   $("#content-area").empty();
@@ -259,9 +258,12 @@ socket.on("votingFinished", (currentPlayerVotes, playerCounter, currentRoundAnsw
     //TODO code to display the questions again
     $("#content-area").empty();
     $("#content-area").off();
-    showVotedFriendQuestion(currentRoundAnswers[playerCounter].answers[0].question, currentRoundAnswers[playerCounter].player, currentPlayerVotes);
     
+    
+        
     for (var i = 0; i < currentPlayerVotes.length; i++) {
+      showVotedFriendQuestion(currentRoundAnswers[playerCounter].answers[i], currentRoundAnswers[playerCounter].player, currentPlayerVotes, i);
+    }
 
 
       //var tempPic = $("#" + currentPlayerVotes[i].player + " img").prop('src');
@@ -278,7 +280,7 @@ socket.on("votingFinished", (currentPlayerVotes, playerCounter, currentRoundAnsw
         $("#content-area").append("Player: " + currentPlayerVotes[i].player + " Question " + (y+1) + " Voted For Answer: " + currentPlayerVotes[i].votes[y] + " They were " + result + "</br>");
       } */
 
-    }
+    
     /*var sec = 5;
     var timer = setInterval(function() {
         $('#countdown-num').text(--sec);
@@ -293,8 +295,7 @@ socket.on("votingFinished", (currentPlayerVotes, playerCounter, currentRoundAnsw
 socket.on("startVoting", (currentRoundAnswers, playerCounter) => {
   var voteCounter = 1; 
   var playerVotes = new Array();
-  console.log("roudn finished");
-  console.log(currentRoundAnswers);
+  
   $(".player").addClass('nowAnswering');
   $("#" + currentRoundAnswers[playerCounter].player).removeClass('nowAnswering');
   $("#content-area").empty();
@@ -511,8 +512,9 @@ function showQuestion(questionNum) {
     xhr.send(null);
   }
 
-  function showVotedFriendQuestion(questionNum, playerName, currentPlayerVotes) {
+  function showVotedFriendQuestion(currentQuestionAnswers, playerName, currentPlayerVotes, currentQuestion) {
 
+    var questionNum = currentQuestionAnswers.question;
     var newQuestion = '';
     var xhr = new XMLHttpRequest();
 
@@ -537,19 +539,28 @@ function showQuestion(questionNum) {
         }
         $("#content-area").empty();
         $("#content-area").append(newQuestion);
+        
         for(var y = 0; y < currentPlayerVotes.length; y++) {
-          if (currentPlayerVotes[y].votes[0] == 0) {
+          console.log(currentPlayerVotes[y].votes[currentQuestion]);
+          console.log(currentQuestionAnswers.answer);
+          if(currentPlayerVotes[y].votes[currentQuestion] == currentQuestionAnswers.answer) {
+            var temp = $("#" + currentPlayerVotes[y].player + " .playerscore").text();
+            $("#" + currentPlayerVotes[y].player + " .playerscore").text(parseInt(temp) + 100);
+          } else {
+            //$("#" + currentPlayerVotes[y].player + " .playerscore").text("wrong");
+          }
+          if (currentPlayerVotes[y].votes[currentQuestion] == 0) {
             var tempPic = $("#" + currentPlayerVotes[y].player + " img").prop('src');
             var val = tempPic.substr(tempPic.indexOf("fg=") + 3);
             var inverseColor = val.substring(0, 6);
 
             $("#friend-answer1").append("<img style='border-color:#" + inverseColor + "' class='vote-bubble' src='" + tempPic + "'/>");
-          } else if (currentPlayerVotes[y].votes[0] == 1) {
+          } else if (currentPlayerVotes[y].votes[currentQuestion] == 1) {
             var tempPic = $("#" + currentPlayerVotes[y].player + " img").prop('src');
             var val = tempPic.substr(tempPic.indexOf("fg=") + 3);
             var inverseColor = val.substring(0, 6);
             $("#friend-answer2").append("<img style='border-color:#" + inverseColor + "' class='vote-bubble' src='" + tempPic + "'/>");
-          } else if (currentPlayerVotes[y].votes[0] == 2) {
+          } else if (currentPlayerVotes[y].votes[currentQuestion] == 2) {
             var tempPic = $("#" + currentPlayerVotes[y].player + " img").prop('src');
             var val = tempPic.substr(tempPic.indexOf("fg=") + 3);
             var inverseColor = val.substring(0, 6);
@@ -560,9 +571,7 @@ function showQuestion(questionNum) {
         $('#friend-name').css('background-color', random_color);
         $('#friend-name-span').css('color', random_color);
         $('#friend-name-span').css('filter', 'invert(100)');
-        $(".answer").click(function(event) {
-
-        });
+        
         //document.getElementById('content').innerHTML = newQuestion;
       }
     };

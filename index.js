@@ -255,6 +255,7 @@ io.on('connection', function(socket){
     if (currentRoom.currentPlayerVotes.length === totalplayers) {
       io.to(room).emit("votingFinished", currentRoom.currentPlayerVotes, playerCounter, currentRoundAnswers);
       console.log("everyone has voted");
+      console.log(currentRoundAnswers);
     }
   });
 

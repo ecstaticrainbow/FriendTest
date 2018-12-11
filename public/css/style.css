@@ -360,12 +360,22 @@ body {
 
 .playertext, .newplayertext {
   display: block;
-  margin-top: 0.7rem;
+  margin-top: 0.5rem;
   font-family: 'Space Mono';
   font-size: 0.9em;
   font-weight: 600;
   color: white;
 }
+
+.playerscore {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: 'Space Mono';
+  font-size: 1.1em;
+  font-weight: 600;
+  color: white;
+}
+
 .newplayertext {
   opacity: 0.8;
   font-weight: 400;
