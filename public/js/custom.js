@@ -260,36 +260,20 @@ socket.on("votingFinished", (currentPlayerVotes, playerCounter, currentRoundAnsw
     $("#content-area").off();
     
     
-        
-    for (var i = 0; i < currentPlayerVotes.length; i++) {
-      showVotedFriendQuestion(currentRoundAnswers[playerCounter].answers[i], currentRoundAnswers[playerCounter].player, currentPlayerVotes, i);
-    }
-
-
-      //var tempPic = $("#" + currentPlayerVotes[i].player + " img").prop('src');
-      
-      //$("friend-question-div").append("<img src='" + tempPic + "'/>");
-      /*for (var y = 0; y < currentPlayerVotes[i].votes.length; y++) {
-        var result;
-
-        if(currentPlayerVotes[i].votes[y] == currentRoundAnswers[playerCounter].answers[y].answer) {
-          result = "correct";
-        } else {
-          result = "incorrect";
-        }
-        $("#content-area").append("Player: " + currentPlayerVotes[i].player + " Question " + (y+1) + " Voted For Answer: " + currentPlayerVotes[i].votes[y] + " They were " + result + "</br>");
-      } */
-
+    showVotedFriendQuestion(currentRoundAnswers[playerCounter].answers[0], currentRoundAnswers[playerCounter].player, currentPlayerVotes, 0);
     
-    /*var sec = 5;
+    var resultsCounter = 1;
     var timer = setInterval(function() {
-        $('#countdown-num').text(--sec);
-        if (sec == 0) {
-          socket.emit("resultsFinished", room, playerCounter);
-          clearInterval(timer);
-        }
-      }, 1000);*/
-
+      if(resultsCounter < currentRoundAnswers[playerCounter].answers.length) {
+        showVotedFriendQuestion(currentRoundAnswers[playerCounter].answers[resultsCounter], currentRoundAnswers[playerCounter].player, currentPlayerVotes, resultsCounter);
+        resultsCounter++;
+      } else {
+        clearInterval(timer);
+        socket.emit("resultsFinished", room, playerCounter);
+      }
+      
+    },3000);      
+    
     });
 
 socket.on("startVoting", (currentRoundAnswers, playerCounter) => {
@@ -567,6 +551,13 @@ function showQuestion(questionNum) {
             $("#friend-answer3").append("<img style='border-color:#" + inverseColor + "' class='vote-bubble' src='" + tempPic + "'/>");
           }
         }
+
+        var timer = setInterval(function() {
+          $(".friend-answer").addClass("incorrect-answer");
+          $("#friend-question-div").children().eq(currentQuestionAnswers.answer + 2).addClass("correct-answer");
+          clearInterval(timer);
+        },1000);
+
 
         $('#friend-name').css('background-color', random_color);
         $('#friend-name-span').css('color', random_color);

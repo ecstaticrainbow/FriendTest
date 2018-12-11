@@ -567,6 +567,18 @@ body {
   margin-top: 0.6rem;
 }
 
+.correct-answer {
+  border-style: solid !important;
+  border-color: green !important;
+  
+}
+
+.incorrect-answer {
+  border-style: solid;
+  border-color: red;
+  
+}
+
 #waiting {
   margin-top: 11rem;
   font-family: 'prod';

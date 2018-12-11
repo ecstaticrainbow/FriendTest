@@ -264,7 +264,7 @@ io.on('connection', function(socket){
     currentRoom.currentPlayerVotes = [];
     if ((playerCounter+1) < (currentRoom.players.length + 1)){
     io.to(room).emit("startVoting", currentRoom.currentRoundAnswers, (playerCounter+1));
-  }
+    }
   });
 
 
