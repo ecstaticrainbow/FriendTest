@@ -87,6 +87,7 @@ class gameRoom {
 class player {
   constructor(playerData) {
     this.username = playerData.dataUID;
+    this.displayname = playerData.dataDisplayName;
   }
 }
 
@@ -126,14 +127,12 @@ var rooms = new Array();
 var players = new Array();
 //var testroom = new gameRoom("test");
 
-
-
-
 io.on('connection', function(socket){
 
   var room;
   var roomIndex;
   var playername;
+  var displayname;
 
   socket.on('join room', (playerData) => {
     //get roomcode from client
@@ -142,12 +141,14 @@ io.on('connection', function(socket){
     
     playername = playerData.dataUID;
 
+    displayname = playerData.dataDisplayName;
 
   //socket.request.session.cookie.username = playername;
 
   //check room doesnt already exist, if it doesnt then push a new one
   if (!checkRoom(room)) {
     rooms.push(new gameRoom(room));
+    
   }
     //add the client to the room, create if it doesnt exist
     socket.join(room);
@@ -208,6 +209,7 @@ io.on('connection', function(socket){
   socket.on('start countdown', (room, options) => {
 
    rooms[roomIndex].gameState = "countdown";
+   fs.writeFile("rooms.json", JSON.stringify(rooms));
    console.log(rooms[roomIndex]);
    io.to(room).emit('countdown');
    var sec = 4;
@@ -217,6 +219,7 @@ io.on('connection', function(socket){
      var currentplayer = Math.floor((Math.random() * rooms[roomIndex].players.length));
      //[roomIndex].currentPlayer = currentplayer;
      rooms[roomIndex].gameState = "round1questions";
+     fs.writeFile("rooms.json", JSON.stringify(rooms));
      var questionSet = new Array();
      //set host questions
      questionSet.push({player: rooms[roomIndex].host.username, questions: getQuestionSet(options.questionsPerRound)});
@@ -240,6 +243,8 @@ io.on('connection', function(socket){
     var totalplayers = rooms[roomIndex].players.length + 1;
     if (currentRoom.currentRoundAnswers.length === totalplayers) {
       io.to(room).emit('roundfinished', currentRoom.currentRoundAnswers);
+      rooms[roomIndex].gameState = "round1voting";
+      fs.writeFile("rooms.json", JSON.stringify(rooms));
       console.log("everyone has answered");
     }
   });
@@ -254,6 +259,8 @@ io.on('connection', function(socket){
     var totalplayers = currentRoom.players.length;
     if (currentRoom.currentPlayerVotes.length === totalplayers) {
       io.to(room).emit("votingFinished", currentRoom.currentPlayerVotes, playerCounter, currentRoundAnswers);
+      rooms[roomIndex].gameState = "round1results";
+      fs.writeFile("rooms.json", JSON.stringify(rooms));
       console.log("everyone has voted");
       console.log(currentRoundAnswers);
     }
@@ -263,6 +270,8 @@ io.on('connection', function(socket){
     var currentRoom = rooms[roomIndex];
     currentRoom.currentPlayerVotes = [];
     if ((playerCounter+1) < (currentRoom.players.length + 1)){
+      rooms[roomIndex].gameState = "round1finished";
+      fs.writeFile("rooms.json", JSON.stringify(rooms));  
     io.to(room).emit("startVoting", currentRoom.currentRoundAnswers, (playerCounter+1));
     }
   });

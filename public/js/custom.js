@@ -15,11 +15,19 @@ $(document).ready(function(){
 
   $(".roomCode").text(room);
   var socket = io.connect('/');
-  var playerData = {
-    dataRoomCode: room,
-    dataUID: username,
-  }
-  socket.emit('join room', playerData);
+  
+
+  $("#displaynamesubmit").click(function () {
+    var playerData = {
+      dataRoomCode: room,
+      dataUID: username,
+      dataDisplayName: $("#displaynameinput").val()
+    }
+    $("#displaynamepopup").hide();
+    socket.emit('join room', playerData);
+  });
+
+  
 
   var colors = ['#e57373', '#F06292', '#BA68C8', '#9575CD', '#7986CB', '#64B5F6', '#4FC3F7', '#4DD0E1', '#4DB6AC', '#81C784', '#AED581', '#DCE775', '#FFD54F', '#FFB74D', '#FF8A65'];
   window.random_color = colors[Math.floor(Math.random() * colors.length)];
@@ -38,14 +46,15 @@ $(document).ready(function(){
   socket.on("connectedUsers", (room) => {
     
     globalRoom = room;
+    console.log(room);
     var currentColor = 1;
     $("#playerWrap").empty();
-    $("#playerWrap").append("<div id='" + room.host.username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.host.username + "?bg=ffffff&fg=" + imageColors[0] + "&size=220&fmt=svg'/><br/><span class='hostText'>Host</span><span class='playertext'>" + room.host.username + "</span><span class='playerscore'>0</span></div>");
+    $("#playerWrap").append("<div id='" + room.host.username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.host.displayname + "?bg=ffffff&fg=" + imageColors[0] + "&size=220&fmt=svg'/><br/><span class='hostText'>Host</span><span class='playertext'>" + room.host.displayname + "</span><span class='playerscore'>0</span></div>");
     for (var i = 0; i < room.players.length; i++) {
       if(username === room.players[i].username) {
-        $("#playerWrap").append("<div id='" + room.players[i].username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.players[i].username + "?bg=ffffff&fg=" + imageColors[currentColor] + "&size=220&fmt=svg'/><br/><span class='currentPlayerText' style='background-color:" + imageColors[currentColor] + "'>You</span><span class='playertext'>" + room.players[i].username + "</span><span class='playerscore'>0</span></div>");
+        $("#playerWrap").append("<div id='" + room.players[i].username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.players[i].displayname + "?bg=ffffff&fg=" + imageColors[currentColor] + "&size=220&fmt=svg'/><br/><span class='currentPlayerText' style='background-color:" + imageColors[currentColor] + "'>You</span><span class='playertext'>" + room.players[i].displayname + "</span><span class='playerscore'>0</span></div>");
       } else {
-        $("#playerWrap").append("<div id='" + room.players[i].username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.players[i].username + "?bg=ffffff&fg=" + imageColors[currentColor] + "&size=220&fmt=svg'/><br/><span class='playertext'>" + room.players[i].username + "</span><span class='playerscore'>0</span></div>");
+        $("#playerWrap").append("<div id='" + room.players[i].username + "' class='player'><img src='http://tinygraphs.com/spaceinvaders/" + room.players[i].displayname + "?bg=ffffff&fg=" + imageColors[currentColor] + "&size=220&fmt=svg'/><br/><span class='playertext'>" + room.players[i].displayname + "</span><span class='playerscore'>0</span></div>");
       }
 
       if (currentColor == 8) {

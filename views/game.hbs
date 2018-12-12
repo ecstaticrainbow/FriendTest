@@ -17,7 +17,13 @@
 		<label>Questions Per Rounds:</label><button onclick="this.nextElementSibling.stepUp()" style="border-radius: 0px 8px 8px 0px">+</button><input type="number" id="numberOfQuestions" name="numberOfQuestions" value="5"/><button onclick="this.previousElementSibling.stepDown()" style="border-radius: 8px 0px 0px 8px">-</button><br/></input>
 		<label>Announcer:</label><input type="checkbox" id="announcer" name="announcer"><br/></input>
 	</div>
-
+	<div id="displaynamepopup">
+    <h1>Enter a display name</h1>
+    <p>This can be whatever you want it to be so go wild!</p>
+    <input type="text" id="displaynameinput" required placeholder="Enter display name..">
+	<br/>
+    <button id="displaynamesubmit">Lets Go!</button>
+</div>
 </div>
 <div id="playersContainer">
 	<div id="playerWrap">
