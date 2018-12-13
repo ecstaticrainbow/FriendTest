@@ -124,7 +124,7 @@ app.get('/cookie',function(req, res){
 
 app.get('/creator', (request, response) => {
   response.render('creator', {
-    layout: 'home'
+    layout: 'creator'
   })
 });
 
