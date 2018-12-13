@@ -21,7 +21,8 @@ $(document).ready(function(){
     var playerData = {
       dataRoomCode: room,
       dataUID: username,
-      dataDisplayName: $("#displaynameinput").val()
+      dataDisplayName: $("#displaynameinput").val(),
+      dataScore : 0,
     }
     $("#displaynamepopup").hide();
     socket.emit('join room', playerData);
@@ -280,8 +281,8 @@ socket.on("votingFinished", (currentPlayerVotes, playerCounter, currentRoundAnsw
         clearInterval(timer);
         socket.emit("resultsFinished", room, playerCounter);
       }
-      
-    },3000);      
+    
+    },3000);   
     
     });
 
@@ -539,6 +540,7 @@ function showQuestion(questionNum) {
           if(currentPlayerVotes[y].votes[currentQuestion] == currentQuestionAnswers.answer) {
             var temp = $("#" + currentPlayerVotes[y].player + " .playerscore").text();
             $("#" + currentPlayerVotes[y].player + " .playerscore").text(parseInt(temp) + 100);
+            
           } else {
             //$("#" + currentPlayerVotes[y].player + " .playerscore").text("wrong");
           }

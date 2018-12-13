@@ -56,6 +56,7 @@ class gameRoom {
     this.currentPlayerAnswer = 0;
     this.currentRoundAnswers = new Array();
     this.currentPlayerVotes = new Array();
+    this.playerScores = new Array();
 
   }
   add(player) {
@@ -88,6 +89,7 @@ class player {
   constructor(playerData) {
     this.username = playerData.dataUID;
     this.displayname = playerData.dataDisplayName;
+    this.score = playerData.dataScore;
   }
 }
 
@@ -120,6 +122,11 @@ app.get('/cookie',function(req, res){
 
 });
 
+app.get('/creator', (request, response) => {
+  response.render('creator', {
+    layout: 'home'
+  })
+});
 
 //var lobby = io.of('/lobby');
 
@@ -133,6 +140,7 @@ io.on('connection', function(socket){
   var roomIndex;
   var playername;
   var displayname;
+  var score;
 
   socket.on('join room', (playerData) => {
     //get roomcode from client
@@ -142,6 +150,8 @@ io.on('connection', function(socket){
     playername = playerData.dataUID;
 
     displayname = playerData.dataDisplayName;
+
+    score = playerData.dataScore;
 
   //socket.request.session.cookie.username = playername;
 
@@ -264,6 +274,12 @@ io.on('connection', function(socket){
       console.log("everyone has voted");
       console.log(currentRoundAnswers);
     }
+  });
+
+  socket.on("pointsupdated", (room, playerScores) => {
+    var currentRoom = rooms[roomIndex];
+    currentRoom.playerScores = playerScores;
+    console.log(currentRoom.playerScores);
   });
 
   socket.on("resultsFinished", (room, playerCounter) => {
